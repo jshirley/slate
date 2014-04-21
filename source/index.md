@@ -4,10 +4,10 @@ title: API Reference
 language_tabs:
   - shell
   - ruby
-  - python
+  - perl
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
+  - <a href='https://tdp.me/account/plus'>API Access requires a subscription</a>
   - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
 
 includes:
@@ -17,67 +17,69 @@ includes:
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the TDP API!
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+This is a **work in progress** to enable more customized data collecting and
+reporting, as well as automating entry of activities.
 
 # Authentication
 
 > To authorize, use this code:
 
 ```ruby
-require 'kittn'
+require 'tdp'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+api = TDP::APIClient.authorize!('api-token-here')
 ```
 
-```python
-import 'kittn'
+```perl
+use Net::TDP;
 
-api = Kittn.authorize('meowmeowmeow')
+my $tdp = Net::TDP->new('api-token-here');
 ```
 
 ```shell
 # With shell, you can just pass the correct header with each request
 curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+  -H "X-API-Token: api-token-here"
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> Make sure to replace `api-token-here` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+TDP uses API keys to allow access to the API. You can register a new TDP API
+key under [your account](https://tdp.me/account/api). API Access does require a
+TDP Plus subscription, so that [I](http://jayshirley.com) can continue to
+operate the service without having to sell one of my children.
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+TDP expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
-`Authorization: meowmeowmeow`
+`X-Access-Token: generatedtoken`
 
 <aside class="notice">
-You must replace `meowmeowmeow` with your personal API key.
+You must replace `generatedtoken` with your personal API key.
 </aside>
 
-# Kittens
+# Goals
 
-## Get All Kittens
+## Get all goals
 
 ```ruby
-require 'kittn'
+require 'tdp'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
+api = TDP::APIClient.authorize!('api-token-here')
+api.goals.get
 ```
 
-```python
-import 'kittn'
+```perl
+use Net::TDP;
 
-api = Kittn.authorize('meowmeowmeow')
-api.kittens.get()
+my $tdp = Net::TDP->new('api-token-here');
+$tdp->goals->get;
 ```
 
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl "https://tdp.me/v1/goals"
+  -H "X-Auth-Token: api-token-here"
 ```
 
 > The above command returns JSON structured like this:
@@ -85,75 +87,95 @@ curl "http://example.com/api/kittens"
 ```json
 [
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+                 "id": 177,
+               "name": "Goal Name",
+             "active": 1,
+          "frequency": 1,
+           "cooldown": 3,
+           "position": 3,
+        "category_id": 16,
+              "color": "#6D0039",
+             "public": 1,
+    "quantity_needed": 0,
+         "start_date": "2014-04-21T00:00:00",
+           "quantity": 1,
+        "description": "",
+          "reminders": [],
+               "tags": [],
+     "is_quality_day": 0,
+                "rgb": [ 109, 0, 57 ],
+       "require_note": 1,
+         "foreground": "#000000",
+              "trend": [{ "today": 1, "date": "2014-04-21" },...]
   }
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves all goals.
 
 ### HTTP Request
 
-`GET http://example.com/kittens`
+`GET https://tdp.me/v1/goals`
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+range     | 6,1     | Days backwards and forwards to provide in trend data
+active    | true    | If set to false, return all goals (even archived and inactive goals)
+category  | null    | Pass in a category ID to only return goals in that category.
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
+## Get a specific goal
 
 ```ruby
-require 'kittn'
+require 'tdp'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
+api = TDP::APIClient.authorize!('api-token-here')
+api.goals.get(1)
 ```
 
-```python
-import 'kittn'
+```perl
+use Net::TDP;
 
-api = Kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
+my $tdp = Net::TDP->new('api-token-here');
+$tdp->goals->get(1);
 ```
 
 ```shell
-curl "http://example.com/api/kittens/3"
-  -H "Authorization: meowmeowmeow"
+curl "https://tdp.me/v1/goals/1"
+  -H "X-Auth-Token: api-token-here"
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+               "id": 177,
+             "name": "Goal Name",
+           "active": 1,
+        "frequency": 1,
+         "cooldown": 3,
+         "position": 3,
+      "category_id": 16,
+            "color": "#6D0039",
+           "public": 1,
+  "quantity_needed": 0,
+       "start_date": "2014-04-21T00:00:00",
+         "quantity": 1,
+      "description": "",
+        "reminders": [],
+             "tags": [],
+   "is_quality_day": 0,
+              "rgb": [ 109, 0, 57 ],
+     "require_note": 1,
+       "foreground": "#000000",
+            "trend": [{ "today": 1, "date": "2014-04-21" },...]
 }
+
 ```
 
-This endpoint retrieves a specific kitten.
+This endpoint retrieves a specific goal.
 
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
 
 ### HTTP Request
 
@@ -164,4 +186,13 @@ This endpoint retrieves a specific kitten.
 Parameter | Description
 --------- | -----------
 ID | The ID of the cat to retrieve
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+range     | 6,1     | Days backwards and forwards to provide in trend data
+active    | true    | If set to false, return all goals (even archived and inactive goals)
+category  | null    | Pass in a category ID to only return goals in that category.
+
 
